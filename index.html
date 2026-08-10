@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meet the Team — SetSale</title>
+
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:            #f5f6fa;
+      --surface:       #ffffff;
+      --border:        #e4e7ef;
+      --text-primary:  #1a1d2e;
+      --text-secondary:#6b7280;
+      --accent:        #4f6ef7;
+      --accent-light:  #eef1fe;
+      --shadow-sm:     0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:     0 4px 16px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.06);
+      --shadow-lg:     0 10px 32px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.07);
+      --radius-sm:     8px;
+      --radius-md:     14px;
+      --radius-lg:     20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ─── Header ───────────────────────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 24px 44px;
+      text-align: center;
+    }
+
+    header .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    header p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ─── Main wrapper ─────────────────────────────────────────────────── */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 52px 24px 88px;
+    }
+
+    /* ─── Section headings ─────────────────────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+    }
+
+    /* ─── Map section ──────────────────────────────────────────────────── */
+    #map-section { margin-bottom: 80px; }
+
+    #map {
+      width: 100%;
+      height: 540px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    /* ─── Mapbox popup overrides ───────────────────────────────────────── */
+    .mapboxgl-popup-content {
+      padding: 0 !important;
+      border-radius: var(--radius-md) !important;
+      box-shadow: var(--shadow-lg) !important;
+      border: 1px solid var(--border) !important;
+      overflow: hidden;
+      min-width: 240px;
+      max-width: 280px;
+    }
+
+    .mapboxgl-popup-close-button {
+      font-size: 18px;
+      color: var(--text-secondary);
+      padding: 8px 10px;
+      line-height: 1;
+      z-index: 10;
+      background: rgba(255,255,255,.85);
+      border-radius: 0 var(--radius-md) 0 var(--radius-sm);
+    }
+
+    .mapboxgl-popup-close-button:hover { color: var(--text-primary); background: rgba(255,255,255,.95); }
+    .mapboxgl-popup-tip { border-top-color: var(--surface) !important; }
+
+    /* popup card */
+    .popup-card { display: flex; flex-direction: column; }
+
+    .popup-card .popup-photo {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      display: block;
+      background: var(--accent-light);
+    }
+
+    .popup-card .popup-body { padding: 14px 16px 16px; }
+
+    .popup-card .popup-name {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .popup-card .popup-title {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .popup-card .popup-location {
+      font-size: .75rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .popup-card .popup-bio {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ─── Custom marker pin ────────────────────────────────────────────── */
+    /*
+     * .marker-wrap  — the element Mapbox anchors to (no transform, so
+     *                  Mapbox pixel math stays accurate at every zoom level).
+     * .marker-pin   — purely visual: rotated diamond with photo inside.
+     *                  Lives inside the wrapper so its transform never
+     *                  affects the anchor point Mapbox uses.
+     */
+    .marker-wrap {
+      width: 0;
+      height: 0;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .marker-pin {
+      width: 40px;
+      height: 40px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      background: var(--accent);
+      border: 3px solid #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,.35);
+      overflow: hidden;
+      position: absolute;
+      bottom: 0;
+      left: -20px;
+      transition: box-shadow .2s;
+    }
+
+    .marker-wrap:hover .marker-pin {
+      box-shadow: 0 5px 16px rgba(0,0,0,.45);
+    }
+
+    .marker-pin img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Counter-rotate the image so it appears upright inside the diamond */
+      transform: rotate(45deg) scale(1.35);
+      display: block;
+    }
+
+    /* ─── Team Grid ────────────────────────────────────────────────────── */
+    #team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    /* team card */
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 20px 22px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent-light) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .team-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .team-card:hover::before { opacity: 1; }
+
+    .team-card .card-photo-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      overflow: hidden;
+      border: 3px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: border-color .2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .team-card:hover .card-photo-wrap { border-color: var(--accent); }
+
+    .team-card .card-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .team-card .card-name {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .team-card .card-title {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .team-card .card-location {
+      font-size: .75rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .team-card .card-bio {
+      font-size: .8rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── Pin icon SVG ─────────────────────────────────────────────────── */
+    .icon-pin {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      flex-shrink: 0;
+    }
+
+    /* ─── Responsive ───────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      #map { height: 380px; }
+      header { padding: 36px 20px 28px; }
+      main { padding: 32px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════════════════════ -->
+  <header>
+    <span class="eyebrow">SetSale</span>
+    <h1>Meet the Team</h1>
+    <p>Our team is distributed across the US, Europe, the Middle East, and South America.</p>
+  </header>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 1 — INTERACTIVE MAP
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="map-section">
+      <p class="section-label">Where We Are</p>
+      <h2 class="section-title">Team Locations</h2>
+      <div id="map"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2 — TEAM GRID
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="grid-section">
+      <p class="section-label">The People</p>
+      <h2 class="section-title">Everyone on the Team</h2>
+      <div id="team-grid"></div>
+    </section>
+
+  </main>
+
+  <script>
+  // ─────────────────────────────────────────────────────────────────────────
+  //  MAPBOX ACCESS TOKEN
+  // ─────────────────────────────────────────────────────────────────────────
+  mapboxgl.accessToken = 'pk.eyJ1IjoicG1jbmFsbHkiLCJhIjoiY21tZHF0Y3VlMDJhcjJwcHNqeXNrZnJ4MSJ9.QqKBZ5AchiAU2EKKa8SK2Q';
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  HELPER — generate a UI Avatars URL for a name
+  //  Replace photo value with a real image path/URL when photos are available.
+  //  e.g.  photo: "images/assaf.jpg"
+  // ─────────────────────────────────────────────────────────────────────────
+  function avatar(name, bg, fg) {
+    const b = bg || '4f6ef7';
+    const f = fg || 'ffffff';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=200&background=${b}&color=${f}&bold=true&rounded=true`;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  TEAM DATA
+  //  Add or remove team members here. Each object follows this shape:
+  //
+  //  {
+  //    name:      "Full Name",
+  //    title:     "Job Title",
+  //    location:  "City, Region",
+  //    latitude:  <number>,
+  //    longitude: <number>,
+  //    photo:     avatar("Full Name") or "images/filename.jpg" for real photos,
+  //    bio:       "One or two sentences about this person."
+  //  }
+  // ─────────────────────────────────────────────────────────────────────────
+  const teamMembers = [
+
+    // ── Leadership ───────────────────────────────────────────────────────
+    {
+      name:      "Assaf",
+      title:     "CEO & Cofounder",
+      location:  "Charlotte, NC",
+      latitude:  35.2271,
+      longitude: -80.8431,
+      photo:     "photos/Assaf.png",
+      bio:       "CEO & Cofounder. Previous startup experience, can solve most problems with an AI solution. Passionate about Data."
+    },
+    {
+      name:      "Seth",
+      title:     "CRO & Cofounder",
+      location:  "Salt Lake City, UT",
+      latitude:  40.7608,
+      longitude: -111.8910,
+      photo:     "photos/Seth.png",
+      bio:       "After a background at Goodleap and Daiken, started SetSale to make quoting easier for contractors and distributors. Incredibly kind."
+    },
+    {
+      name:      "Aaron Heckmann",
+      title:     "CTO",
+      location:  "San Francisco, CA",
+      latitude:  37.7749,
+      longitude: -122.4194,
+      photo:     "photos/Aaron.png",
+      bio:       "Zeal for cybersecurity. Creative solutionist who loves playing the drums and video games."
+    },
+
+    // ── Sales & Customer Success ─────────────────────────────────────────
+    {
+      name:      "Wright",
+      title:     "VP of Sales",
+      location:  "Atlanta, GA",
+      latitude:  33.7490,
+      longitude: -84.3880,
+      photo:     "photos/Wright.png",
+      bio:       "After working at Goodleap, came about to help build SetSale. Passionate about distributor relationships and the Georgia Bulldogs."
+    },
+    {
+      name:      "Parker McNally",
+      title:     "Director of Customer Success",
+      location:  "Dallas, TX",
+      latitude:  32.7767,
+      longitude: -96.7970,
+      photo:     "photos/Parker.png",
+      bio:       "Helps contractors succeed with SetSale. Passionate about building lasting client relationships and distributor relationships. Has two weiner dogs and a kid."
+    },
+    {
+      name:      "Lindsay",
+      title:     "Customer Success Manager",
+      location:  "Columbus, OH",
+      latitude:  39.9612,
+      longitude: -82.9988,
+      photo:     "photos/Lindsay.png",
+      bio:       "Guides new contractors from signup to their first won quotes. Owns onboarding calls and keeps accounts moving."
+    },
+    {
+      name:      "Gaby",
+      title:     "Customer Success Manager",
+      location:  "Denver, CO",
+      latitude:  39.7600,
+      longitude: -104.9500,
+      photo:     "photos/Gaby.png",
+      bio:       "Runs onboarding calls and sets the standard for how SetSale gets contractors to their first won quote."
+    },
+    {
+      name:      "Jessica",
+      title:     "Customer Success Manager",
+      location:  "Arlington, VA",
+      latitude:  38.8816,
+      longitude: -77.0910,
+      photo:     "photos/Jessica.png",
+      bio:       "Newest member of the Customer Success team. Working with contractors to get them quoting and winning."
+    },
+    {
+      name:      "Jake",
+      title:     "Account Executive",
+      location:  "Pocatello, ID",
+      latitude:  42.8713,
+      longitude: -112.4455,
+      photo:     "photos/Jake.png",
+      bio:       "Ex-JBW Territory Manager turned Account Executive. Has never met a stranger. Ex-rodeo champion who knows how to both rope and ride horses."
+    },
+    {
+      name:      "Lizette",
+      title:     "Account Executive",
+      location:  "Atlanta, GA",
+      latitude:  33.7815,
+      longitude: -84.3550,
+      photo:     "photos/Lizette.png",
+      bio:       "Works with contractors and distributor partners to get new accounts up and running on SetSale."
+    },
+
+    // ── Product ──────────────────────────────────────────────────────────
+    {
+      name:      "Hayden",
+      title:     "Product Manager",
+      location:  "Chicago, IL",
+      latitude:  41.8781,
+      longitude: -87.6298,
+      photo:     "photos/Hayden.png",
+      bio:       "Translates contractor pain points into shipped product. The bridge between what CS hears and what engineering builds."
+    },
+
+    // ── Marketing ────────────────────────────────────────────────────────
+    {
+      name:      "Jillian",
+      title:     "Marketing",
+      location:  "Jacksonville, FL",
+      latitude:  30.3322,
+      longitude: -81.6557,
+      photo:     "photos/Jillian.png",
+      bio:       "Marketing extraordinaire who is helping to build our brand. The queen of SetSale swag."
+    },
+
+    // ── Engineering & QA ─────────────────────────────────────────────────
+    {
+      name:      "Curtis",
+      title:     "Developer",
+      location:  "Madrid, Spain",
+      latitude:  40.4168,
+      longitude: -3.7038,
+      photo:     "photos/Curtis.png",
+      bio:       "UX Design + Development expert. Creates beautiful solutions for our customers."
+    },
+    {
+      name:      "Dave",
+      title:     "Developer",
+      location:  "Dubai, UAE",
+      latitude:  25.2048,
+      longitude: 55.2708,
+      photo:     "photos/Dave.png",
+      bio:       "Nomad who's lived in Thailand and now calls Dubai home. Originally from Budapest. Great at finding the right solutions to problems."
+    },
+    {
+      name:      "Jonathan",
+      title:     "Developer",
+      location:  "Hamburg, Germany",
+      latitude:  53.5511,
+      longitude: 9.9937,
+      photo:     "photos/Jonathan.png",
+      bio:       "Dog dad first, developer second, skier third. Thinks in systems and solutions."
+    },
+    {
+      name:      "Joshua",
+      title:     "Head of QA",
+      location:  "Denver, CO",
+      latitude:  39.7392,
+      longitude: -104.9903,
+      photo:     "photos/Joshua.png",
+      bio:       "Bug squashing, QA gremlin who always has a fresh mug of the fanciest coffee you've never heard of."
+    },
+
+    // ── Data ─────────────────────────────────────────────────────────────
+    {
+      name:      "Cristian Molina",
+      title:     "Data Entry Specialist",
+      location:  "Santiago, Chile",
+      latitude:  -33.4489,
+      longitude: -70.6693,
+      photo:     "photos/Cristian.png",
+      bio:       "Outdoorsman who loves his kid and his processes."
+    },
+    {
+      name:      "Manuela Medina",
+      title:     "Data Entry Specialist",
+      location:  "Bogotá, Colombia",
+      latitude:  4.7110,
+      longitude: -74.0721,
+      photo:     "photos/Manuela.png",
+      bio:       "College Student in Bogotá. Loves cats."
+    }
+
+    // ── ADD MORE TEAM MEMBERS BELOW ──────────────────────────────────────
+    // Copy and paste one of the objects above, update the fields, and
+    // make sure to add a comma after the previous entry.
+    //
+    // For a real photo, replace avatar("Name") with:
+    //   photo: "images/filename.jpg"   (local file next to this HTML)
+    //   photo: "https://..."           (remote URL)
+    //
+    // Example:
+    // ,{
+    //   name:      "Alex Kim",
+    //   title:     "Support Engineer",
+    //   location:  "Seoul, South Korea",
+    //   latitude:  37.5665,
+    //   longitude: 126.9780,
+    //   photo:     avatar("Alex Kim"),
+    //   bio:       "Resolves customer issues quickly and thoroughly."
+    // }
+
+  ]; // ← end of teamMembers array
+
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  MAP INITIALISATION
+  // ─────────────────────────────────────────────────────────────────────────
+  const map = new mapboxgl.Map({
+    container: 'map',
+    // Swap the style URL to change the look:
+    //   mapbox://styles/mapbox/dark-v11              (dark — current)
+    //   mapbox://styles/mapbox/navigation-night-v1   (navigation dark)
+    //   mapbox://styles/mapbox/light-v11             (light)
+    //   mapbox://styles/mapbox/satellite-streets-v12 (satellite)
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-12, 25],   // centered to fit Santiago through Dubai in one view
+    zoom: 1.8,
+    projection: 'mercator'
+  });
+
+  // Navigation controls (zoom +/-)
+  map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+
+  // Track open popup so we can close it before opening another
+  let activePopup = null;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  HELPER — build popup HTML for a team member
+  // ─────────────────────────────────────────────────────────────────────────
+  function buildPopupHTML(member) {
+    return `
+      <div class="popup-card">
+        <img class="popup-photo" src="${member.photo}" alt="${member.name}" />
+        <div class="popup-body">
+          <div class="popup-name">${member.name}</div>
+          <div class="popup-title">${member.title}</div>
+          <div class="popup-location">
+            <svg class="icon-pin" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.75 4.5 8.5 4.5 8.5s4.5-4.75 4.5-8.5c0-2.49-2.01-4.5-4.5-4.5Zm0 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" fill="#6b7280"/>
+            </svg>
+            ${member.location}
+          </div>
+          <div class="popup-bio">${member.bio}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  HELPER — fly map to a member and open their popup
+  // ─────────────────────────────────────────────────────────────────────────
+  function focusMember(member, zoom) {
+    zoom = zoom || 5;
+
+    // Close any open popup first
+    if (activePopup) { activePopup.remove(); activePopup = null; }
+
+    map.flyTo({
+      center: [member.longitude, member.latitude],
+      zoom: zoom,
+      speed: 1.4,
+      curve: 1.4
+    });
+
+    activePopup = new mapboxgl.Popup({ offset: 28, closeButton: true, maxWidth: '280px' })
+      .setLngLat([member.longitude, member.latitude])
+      .setHTML(buildPopupHTML(member))
+      .addTo(map);
+
+    activePopup.on('close', () => { activePopup = null; });
+
+    // Scroll to map
+    document.getElementById('map-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  ADD MARKERS + BUILD TEAM GRID
+  // ─────────────────────────────────────────────────────────────────────────
+  const grid = document.getElementById('team-grid');
+
+  teamMembers.forEach(function(member) {
+
+    // ── Map marker ──────────────────────────────────────────────────────
+    // Outer wrapper — this is what Mapbox anchors. No CSS transform on
+    // this element, so the anchor point is always pixel-accurate.
+    const wrap = document.createElement('div');
+    wrap.className = 'marker-wrap';
+    wrap.title = member.name;
+
+    // Inner pin — rotated diamond with the photo inside
+    const pin = document.createElement('div');
+    pin.className = 'marker-pin';
+
+    const img = document.createElement('img');
+    img.src = member.photo;
+    img.alt = member.name;
+    pin.appendChild(img);
+    wrap.appendChild(pin);
+
+    wrap.addEventListener('click', function() { focusMember(member, 5); });
+
+    // anchor: 'bottom-left' aligns the bottom-left corner of the wrapper
+    // (which is the tip of the rotated diamond) exactly to the coordinate.
+    new mapboxgl.Marker({ element: wrap })
+      .setLngLat([member.longitude, member.latitude])
+      .addTo(map);
+
+    // ── Team card ────────────────────────────────────────────────────────
+    const card = document.createElement('div');
+    card.className = 'team-card';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', 'View ' + member.name + ' on map');
+
+    card.innerHTML =
+      '<div class="card-photo-wrap">' +
+        '<img src="' + member.photo + '" alt="' + member.name + '" loading="lazy" />' +
+      '</div>' +
+      '<div class="card-name">' + member.name + '</div>' +
+      '<div class="card-title">' + member.title + '</div>' +
+      '<div class="card-location">' +
+        '<svg class="icon-pin" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+          '<path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.75 4.5 8.5 4.5 8.5s4.5-4.75 4.5-8.5c0-2.49-2.01-4.5-4.5-4.5Zm0 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" fill="#6b7280"/>' +
+        '</svg>' +
+        member.location +
+      '</div>' +
+      '<div class="card-bio">' + member.bio + '</div>';
+
+    card.addEventListener('click', function() { focusMember(member, 5); });
+    card.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); focusMember(member, 5); }
+    });
+
+    grid.appendChild(card);
+  });
+
+  </script>
+</body>
+</html>
