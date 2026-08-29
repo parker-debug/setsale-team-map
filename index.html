@@ -223,6 +223,46 @@
       display: block;
     }
 
+    /* ─── Filter bar ───────────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: -12px 0 20px;
+    }
+
+    .filter-btn {
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background .18s, border-color .18s, color .18s;
+    }
+
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .filter-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .filter-btn[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .filter-btn .filter-count {
+      margin-left: 6px;
+      font-weight: 500;
+      opacity: .7;
+    }
+
     /* ─── Team Grid ────────────────────────────────────────────────────── */
     #team-grid {
       display: grid;
@@ -333,6 +373,9 @@
     /* ─── Responsive ───────────────────────────────────────────────────── */
     @media (max-width: 640px) {
       #map { height: 380px; }
+      /* Keep the popup short enough to fit inside the shorter mobile map */
+      .mapboxgl-popup-content { min-width: 200px; max-width: 230px; }
+      .popup-card .popup-photo { height: 92px; }
       header { padding: 36px 20px 28px; }
       main { padding: 32px 16px 60px; }
     }
@@ -357,6 +400,7 @@
     <section id="map-section">
       <p class="section-label">Where We Are</p>
       <h2 class="section-title">Team Locations</h2>
+      <div class="filter-bar" id="filter-bar" role="group" aria-label="Filter by team"></div>
       <div id="map"></div>
     </section>
 
@@ -407,6 +451,7 @@
     // ── Leadership ───────────────────────────────────────────────────────
     {
       name:      "Assaf",
+      team:      "eng",
       title:     "CEO & Cofounder",
       location:  "Charlotte, NC",
       latitude:  35.2271,
@@ -416,6 +461,7 @@
     },
     {
       name:      "Seth",
+      team:      "sales",
       title:     "CRO & Cofounder",
       location:  "Salt Lake City, UT",
       latitude:  40.7608,
@@ -425,6 +471,7 @@
     },
     {
       name:      "Aaron",
+      team:      "eng",
       title:     "CTO",
       location:  "San Francisco, CA",
       latitude:  37.7749,
@@ -436,6 +483,7 @@
     // ── Sales & Customer Success ─────────────────────────────────────────
     {
       name:      "Wright",
+      team:      "sales",
       title:     "VP of Sales",
       location:  "Atlanta, GA",
       latitude:  33.7490,
@@ -445,6 +493,7 @@
     },
     {
       name:      "Parker",
+      team:      "cs",
       title:     "Director of Customer Success",
       location:  "Dallas, TX",
       latitude:  32.7767,
@@ -454,6 +503,7 @@
     },
     {
       name:      "Lindsay",
+      team:      "cs",
       title:     "Customer Success Manager",
       location:  "Columbus, OH",
       latitude:  39.9612,
@@ -463,6 +513,7 @@
     },
     {
       name:      "Gaby",
+      team:      "cs",
       title:     "Customer Success Manager",
       location:  "Denver, CO",
       latitude:  39.7392,
@@ -472,6 +523,7 @@
     },
     {
       name:      "Jessica",
+      team:      "cs",
       title:     "Customer Success Manager",
       location:  "Arlington, VA",
       latitude:  38.8816,
@@ -481,6 +533,7 @@
     },
     {
       name:      "Braydon",
+      team:      "cs",
       title:     "Customer Success Manager",
       location:  "Phoenix, AZ",
       latitude:  33.4484,
@@ -490,6 +543,7 @@
     },
     {
       name:      "Jake",
+      team:      "sales",
       title:     "Account Executive",
       location:  "Pocatello, ID",
       latitude:  42.8713,
@@ -499,6 +553,7 @@
     },
     {
       name:      "Lizette",
+      team:      "sales",
       title:     "Account Executive",
       location:  "Atlanta, GA",
       latitude:  33.7490,
@@ -510,6 +565,7 @@
     // ── Product ──────────────────────────────────────────────────────────
     {
       name:      "Hayden",
+      team:      "eng",
       title:     "Product Manager",
       location:  "Chicago, IL",
       latitude:  41.8781,
@@ -521,6 +577,7 @@
     // ── Revenue Operations ───────────────────────────────────────────────
     {
       name:      "Betty",
+      team:      "sales",
       title:     "Director of Revenue Operations",
       location:  "Chicago, IL",
       latitude:  41.8781,
@@ -532,6 +589,7 @@
     // ── Marketing ────────────────────────────────────────────────────────
     {
       name:      "Jillian",
+      team:      "sales",
       title:     "Marketing",
       location:  "Jacksonville, FL",
       latitude:  30.3322,
@@ -543,6 +601,7 @@
     // ── Engineering & QA ─────────────────────────────────────────────────
     {
       name:      "Curtis",
+      team:      "eng",
       title:     "Developer",
       location:  "Madrid, Spain",
       latitude:  40.4168,
@@ -552,6 +611,7 @@
     },
     {
       name:      "Dave",
+      team:      "eng",
       title:     "Developer",
       location:  "Dubai, UAE",
       latitude:  25.2048,
@@ -561,6 +621,7 @@
     },
     {
       name:      "Jonathan",
+      team:      "eng",
       title:     "Developer",
       location:  "Hamburg, Germany",
       latitude:  53.5511,
@@ -570,6 +631,7 @@
     },
     {
       name:      "Joshua",
+      team:      "eng",
       title:     "Head of QA",
       location:  "Denver, CO",
       latitude:  39.7392,
@@ -581,6 +643,7 @@
     // ── Data ─────────────────────────────────────────────────────────────
     {
       name:      "Cristian",
+      team:      "eng",
       title:     "Data Entry Specialist",
       location:  "Santiago, Chile",
       latitude:  -33.4489,
@@ -590,6 +653,7 @@
     },
     {
       name:      "Manuela",
+      team:      "eng",
       title:     "Data Entry Specialist",
       location:  "Bogotá, Colombia",
       latitude:  4.7110,
@@ -674,16 +738,24 @@
     // Close any open popup first
     if (activePopup) { activePopup.remove(); activePopup = null; }
 
+    const dx = pinOffsetX.get(member) || 0;
+
+    // Mapbox renders popups INSIDE the map container, which is overflow:hidden.
+    // A popup opens upward from the pin, so if the pin sits at the vertical
+    // centre there isn't enough room above it and the top of the card gets
+    // clipped. Nudging the camera target downward puts the pin lower in the
+    // frame and leaves headroom for the card.
+    const mapH = map.getContainer().clientHeight;
+    const drop = Math.round(mapH * 0.18);
+
     map.flyTo({
       center: [member.longitude, member.latitude],
+      offset: [dx, drop],
       zoom: zoom,
       speed: 1.4,
       curve: 1.4
     });
 
-    // Anchor the popup above the pin, shifted by the same amount the pin was.
-    // -46px clears the 40px-tall pin with a small gap.
-    const dx = pinOffsetX.get(member) || 0;
     activePopup = new mapboxgl.Popup({
         anchor: 'bottom',
         offset: [dx, -46],
@@ -695,6 +767,22 @@
       .addTo(map);
 
     activePopup.on('close', () => { activePopup = null; });
+
+    // Safety net: once the camera settles, measure the card as rendered. If any
+    // of it is still above the top edge (tall bio, short viewport, zoomed-out
+    // browser), pan just far enough to bring it fully into view.
+    const popupRef = activePopup;
+    map.once('moveend', function() {
+      requestAnimationFrame(function() {
+        if (popupRef !== activePopup) return;      // superseded by another click
+        const el = popupRef.getElement();
+        if (!el) return;
+        const PAD = 12;
+        const mapTop = map.getContainer().getBoundingClientRect().top;
+        const overflow = (mapTop + PAD) - el.getBoundingClientRect().top;
+        if (overflow > 0) map.panBy([0, -overflow], { duration: 260 });
+      });
+    });
 
     // Scroll to map
     document.getElementById('map-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -720,6 +808,9 @@
   // ───────────────────────────────────────────────────────────────────────
   const PIN_SPACING = 48;
 
+  const markerByMember = new Map();
+  const cardByMember   = new Map();
+
   const cityGroups = {};
   teamMembers.forEach(function(member) {
     const key = member.location.trim().toLowerCase();
@@ -727,14 +818,28 @@
   });
 
   const pinOffsetX = new Map();
-  Object.keys(cityGroups).forEach(function(key) {
-    const group = cityGroups[key];
-    // Centre the fan on the true coordinate: 2 people -> -24/+24, 3 -> -48/0/+48
-    const start = -((group.length - 1) * PIN_SPACING) / 2;
-    group.forEach(function(member, i) {
-      pinOffsetX.set(member, start + i * PIN_SPACING);
+
+  // Fan out whichever members are currently visible. Recomputed on every filter
+  // change so that filtering down to one person per city re-centres their pin
+  // on its true coordinate instead of leaving it offset for an absent colleague.
+  function recomputeOffsets(visibleMembers) {
+    pinOffsetX.clear();
+    const groups = {};
+    visibleMembers.forEach(function(member) {
+      const key = member.location.trim().toLowerCase();
+      (groups[key] = groups[key] || []).push(member);
     });
-  });
+    Object.keys(groups).forEach(function(key) {
+      const group = groups[key];
+      // Centre the fan on the true coordinate: 2 people -> -24/+24, 3 -> -48/0/+48
+      const start = -((group.length - 1) * PIN_SPACING) / 2;
+      group.forEach(function(member, i) {
+        pinOffsetX.set(member, start + i * PIN_SPACING);
+      });
+    });
+  }
+
+  recomputeOffsets(teamMembers);
 
 
   teamMembers.forEach(function(member) {
@@ -758,13 +863,17 @@
     pin.appendChild(img);
     wrap.appendChild(pin);
 
-    wrap.addEventListener('click', function() { focusMember(member, 5); });
+    wrap.addEventListener('click', function(e) {
+      e.stopPropagation();
+      focusMember(member, 5);
+    });
 
     // anchor: 'bottom-left' aligns the bottom-left corner of the wrapper
     // (which is the tip of the rotated diamond) exactly to the coordinate.
-    new mapboxgl.Marker({ element: wrap, offset: [pinOffsetX.get(member) || 0, 0] })
+    const marker = new mapboxgl.Marker({ element: wrap, offset: [pinOffsetX.get(member) || 0, 0] })
       .setLngLat([member.longitude, member.latitude])
       .addTo(map);
+    markerByMember.set(member, marker);
 
     // ── Team card ────────────────────────────────────────────────────────
     const card = document.createElement('div');
@@ -794,6 +903,94 @@
     });
 
     grid.appendChild(card);
+    cardByMember.set(member, card);
+  });
+
+
+  // ───────────────────────────────────────────────────────────────────────
+  //  TEAM FILTER
+  //  One control drives both the map pins and the grid below.
+  // ───────────────────────────────────────────────────────────────────────
+  const TEAMS = [
+    { id: 'all',   label: 'Everyone' },
+    { id: 'eng',   label: 'Eng'      },
+    { id: 'cs',    label: 'CS'       },
+    { id: 'sales', label: 'Sales'    }
+  ];
+
+  const filterBar = document.getElementById('filter-bar');
+  let activeTeam = 'all';
+
+  function membersInTeam(teamId) {
+    return teamId === 'all'
+      ? teamMembers
+      : teamMembers.filter(function(m) { return m.team === teamId; });
+  }
+
+  function applyFilter(teamId) {
+    activeTeam = teamId;
+
+    // An open popup may belong to someone now hidden — close it either way.
+    if (activePopup) { activePopup.remove(); activePopup = null; }
+
+    const visible = membersInTeam(teamId);
+    const visibleSet = new Set(visible);
+
+    // Re-fan the pins for just this subset, then show/hide everything.
+    recomputeOffsets(visible);
+
+    teamMembers.forEach(function(member) {
+      const shown  = visibleSet.has(member);
+      const marker = markerByMember.get(member);
+      const card   = cardByMember.get(member);
+
+      if (marker) {
+        marker.setOffset([pinOffsetX.get(member) || 0, 0]);
+        marker.getElement().style.display = shown ? '' : 'none';
+      }
+      if (card) card.style.display = shown ? '' : 'none';
+    });
+
+    // Update button state
+    Array.prototype.forEach.call(filterBar.children, function(btn) {
+      btn.setAttribute('aria-pressed', String(btn.dataset.team === teamId));
+    });
+
+    // Frame the people who are left
+    fitTo(visible);
+  }
+
+  // Fit the map around a set of members, with a sane fallback for one person
+  function fitTo(members) {
+    if (!members.length) return;
+
+    if (members.length === 1) {
+      map.flyTo({ center: [members[0].longitude, members[0].latitude], zoom: 4, speed: 1.2 });
+      return;
+    }
+
+    const bounds = new mapboxgl.LngLatBounds();
+    members.forEach(function(m) { bounds.extend([m.longitude, m.latitude]); });
+
+    map.fitBounds(bounds, {
+      padding: { top: 60, bottom: 60, left: 60, right: 60 },
+      maxZoom: 4.5,
+      duration: 900
+    });
+  }
+
+  TEAMS.forEach(function(team) {
+    const count = membersInTeam(team.id).length;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'filter-btn';
+    btn.dataset.team = team.id;
+    btn.setAttribute('aria-pressed', String(team.id === 'all'));
+    btn.innerHTML = team.label + '<span class="filter-count">' + count + '</span>';
+    btn.addEventListener('click', function() { applyFilter(team.id); });
+
+    filterBar.appendChild(btn);
   });
 
   </script>
