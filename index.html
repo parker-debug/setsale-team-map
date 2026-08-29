@@ -444,7 +444,7 @@
       bio:       "After working at Goodleap, came about to help build SetSale. Passionate about distributor relationships and the Georgia Bulldogs."
     },
     {
-      name:      "Parker McNally",
+      name:      "Parker",
       title:     "Director of Customer Success",
       location:  "Dallas, TX",
       latitude:  32.7767,
@@ -465,8 +465,8 @@
       name:      "Gaby",
       title:     "Customer Success Manager",
       location:  "Denver, CO",
-      latitude:  39.7600,
-      longitude: -104.9500,
+      latitude:  39.7392,
+      longitude: -104.9903,
       photo:     "photos/Gaby.png",
       bio:       "Runs onboarding calls and sets the standard for how SetSale gets contractors to their first won quote."
     },
@@ -478,6 +478,15 @@
       longitude: -77.0910,
       photo:     "photos/Jessica.png",
       bio:       "Newest member of the Customer Success team. Working with contractors to get them quoting and winning."
+    },
+    {
+      name:      "Brayden",
+      title:     "Customer Success Manager",
+      location:  "Phoenix, AZ",
+      latitude:  33.4484,
+      longitude: -112.0740,
+      photo:     "photos/Brayden.png",
+      bio:       "Customer Success Manager working with contractors across the Southwest."
     },
     {
       name:      "Jake",
@@ -492,8 +501,8 @@
       name:      "Lizette",
       title:     "Account Executive",
       location:  "Atlanta, GA",
-      latitude:  33.7815,
-      longitude: -84.3550,
+      latitude:  33.7490,
+      longitude: -84.3880,
       photo:     "photos/Lizette.png",
       bio:       "Works with contractors and distributor partners to get new accounts up and running on SetSale."
     },
@@ -507,6 +516,17 @@
       longitude: -87.6298,
       photo:     "photos/Hayden.png",
       bio:       "Translates contractor pain points into shipped product. The bridge between what CS hears and what engineering builds."
+    },
+
+    // ── Revenue Operations ───────────────────────────────────────────────
+    {
+      name:      "Betty",
+      title:     "Director of Revenue Operations",
+      location:  "Chicago, IL",
+      latitude:  41.8781,
+      longitude: -87.6298,
+      photo:     "photos/Betty.png",
+      bio:       "Keeps the go-to-market data honest and connects what sales and CS see to what the numbers say."
     },
 
     // ── Marketing ────────────────────────────────────────────────────────
@@ -560,7 +580,7 @@
 
     // ── Data ─────────────────────────────────────────────────────────────
     {
-      name:      "Cristian Molina",
+      name:      "Cristian",
       title:     "Data Entry Specialist",
       location:  "Santiago, Chile",
       latitude:  -33.4489,
@@ -569,7 +589,7 @@
       bio:       "Outdoorsman who loves his kid and his processes."
     },
     {
-      name:      "Manuela Medina",
+      name:      "Manuela",
       title:     "Data Entry Specialist",
       location:  "Bogotá, Colombia",
       latitude:  4.7110,
@@ -628,7 +648,8 @@
   function buildPopupHTML(member) {
     return `
       <div class="popup-card">
-        <img class="popup-photo" src="${member.photo}" alt="${member.name}" />
+        <img class="popup-photo" src="${member.photo}" alt="${member.name}"
+             onerror="this.onerror=null;this.src='${avatar(member.name)}'" />
         <div class="popup-body">
           <div class="popup-name">${member.name}</div>
           <div class="popup-title">${member.title}</div>
@@ -660,7 +681,15 @@
       curve: 1.4
     });
 
-    activePopup = new mapboxgl.Popup({ offset: 28, closeButton: true, maxWidth: '280px' })
+    // Anchor the popup above the pin, shifted by the same amount the pin was.
+    // -46px clears the 40px-tall pin with a small gap.
+    const dx = pinOffsetX.get(member) || 0;
+    activePopup = new mapboxgl.Popup({
+        anchor: 'bottom',
+        offset: [dx, -46],
+        closeButton: true,
+        maxWidth: '280px'
+      })
       .setLngLat([member.longitude, member.latitude])
       .setHTML(buildPopupHTML(member))
       .addTo(map);
@@ -675,6 +704,38 @@
   //  ADD MARKERS + BUILD TEAM GRID
   // ─────────────────────────────────────────────────────────────────────────
   const grid = document.getElementById('team-grid');
+
+  // ───────────────────────────────────────────────────────────────────────
+  //  CO-LOCATION OFFSETS
+  //  Two people in the same city share a coordinate, so their pins would sit
+  //  exactly on top of each other. Rather than faking the coordinates (which
+  //  drifts wrong as you zoom in), each pin in a shared city gets a fixed
+  //  PIXEL offset. Pixel offsets are zoom-independent, so the pins stay the
+  //  same distance apart whether you're looking at the whole world or one
+  //  street — and the underlying coordinate stays truthful.
+  //
+  //  Pins are 40px wide; PIN_SPACING of 48 leaves a visible gap between them.
+  //  Nothing to maintain: add a third person to a city and the fan widens
+  //  automatically.
+  // ───────────────────────────────────────────────────────────────────────
+  const PIN_SPACING = 48;
+
+  const cityGroups = {};
+  teamMembers.forEach(function(member) {
+    const key = member.location.trim().toLowerCase();
+    (cityGroups[key] = cityGroups[key] || []).push(member);
+  });
+
+  const pinOffsetX = new Map();
+  Object.keys(cityGroups).forEach(function(key) {
+    const group = cityGroups[key];
+    // Centre the fan on the true coordinate: 2 people -> -24/+24, 3 -> -48/0/+48
+    const start = -((group.length - 1) * PIN_SPACING) / 2;
+    group.forEach(function(member, i) {
+      pinOffsetX.set(member, start + i * PIN_SPACING);
+    });
+  });
+
 
   teamMembers.forEach(function(member) {
 
@@ -692,6 +753,8 @@
     const img = document.createElement('img');
     img.src = member.photo;
     img.alt = member.name;
+    // If a headshot file is missing, fall back to generated initials
+    img.onerror = function() { this.onerror = null; this.src = avatar(member.name); };
     pin.appendChild(img);
     wrap.appendChild(pin);
 
@@ -699,7 +762,7 @@
 
     // anchor: 'bottom-left' aligns the bottom-left corner of the wrapper
     // (which is the tip of the rotated diamond) exactly to the coordinate.
-    new mapboxgl.Marker({ element: wrap })
+    new mapboxgl.Marker({ element: wrap, offset: [pinOffsetX.get(member) || 0, 0] })
       .setLngLat([member.longitude, member.latitude])
       .addTo(map);
 
@@ -712,7 +775,8 @@
 
     card.innerHTML =
       '<div class="card-photo-wrap">' +
-        '<img src="' + member.photo + '" alt="' + member.name + '" loading="lazy" />' +
+        '<img src="' + member.photo + '" alt="' + member.name + '" loading="lazy" ' +
+          'onerror="this.onerror=null;this.src=\'' + avatar(member.name) + '\'" />' +
       '</div>' +
       '<div class="card-name">' + member.name + '</div>' +
       '<div class="card-title">' + member.title + '</div>' +
